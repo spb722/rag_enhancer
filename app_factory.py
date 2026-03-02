@@ -128,8 +128,7 @@ CRITICAL RULES:
 6. If the statement mentions product subscription, bundle, VAS, subscription channel → pick Subscriptions.
 7. If the statement mentions plan change, old plan, credit rating, dealer → pick Profile_Cdr_group.
 8. If the statement mentions onnet/offnet voice, GCC roaming, ARPU calculation, monthly trend, prepaid revenue split → pick Common_Seg_Fct.
-9. If the statement mentions a holistic view, demographics + usage, value segment, NBO → pick 360_PROFILE.
-10. A statement can mention MULTIPLE KPIs. Return MULTIPLE tables if needed.
+9. A statement can mention MULTIPLE KPIs. Return MULTIPLE tables if needed.
 
 Also check the "never_use_for" field of each retrieved table to make sure you are not misrouting.
 

@@ -15,25 +15,9 @@
     "never_use_for": "revenue, usage, recharge, demographics, device, plan, subscription products"
   },
   {
-    "table_id": "T2",
-    "table_name": "360_PROFILE",
-    "description": "This is the consolidated 360-degree analytical view of each subscriber. It combines demographics (age, gender, nationality, language), subscription lifecycle dates (activation, suspension, termination), plan and contract details, recharge behavior summary, aggregated voice/data/SMS usage, revenue breakdown (voice, data, SMS, roaming, IDD, VAS), device information, value segmentation, ARPU bands, and Next Best Offer indicators. Data is aggregated across multiple time windows. Use this table when the query needs a holistic subscriber profile combining multiple dimensions, or when it involves segmentation, churn modeling, ARPU bands, value segments, or Next Best Offer. This is the go-to table for any summarized multi-dimensional analytical query about a subscriber.",
-    "data_type": "summarized",
-    "time_windows": ["multi-window aggregates", "D-1"],
-    "refresh": "daily",
-    "granularity": "one record per subscriber",
-    "example_queries": [
-      "high-value subscribers with declining data usage",
-      "total revenue of a subscriber in the last 30 days",
-      "subscribers in the premium ARPU band who are at risk of churn",
-      "next best offer for subscribers with low VAS revenue"
-    ],
-    "never_use_for": "real-time events, campaign delivery tracking, detailed recharge channel analysis, plan change history, credit rating"
-  },
-  {
     "table_id": "T3",
     "table_name": "AUDIENCE_SEGMENT_CDR",
-    "description": "This table stores the mapping between subscribers and their assigned audience segments for campaign targeting. Each record links a subscriber MSISDN to a specific segment ID and segment name. It also tracks the execution counter for how many times the segmentation has been run. Use this table when the query is about which campaign audience segment a subscriber belongs to, segment membership, or segment-based audience selection. This is NOT for value-based segmentation or ARPU bands — those are in 360_PROFILE.",
+    "description": "This table stores the mapping between subscribers and their assigned audience segments for campaign targeting. Each record links a subscriber MSISDN to a specific segment ID and segment name. It also tracks the execution counter for how many times the segmentation has been run. Use this table when the query is about which campaign audience segment a subscriber belongs to, segment membership, or segment-based audience selection. This is NOT for value-based segmentation or ARPU bands.",
     "data_type": "mapping",
     "time_windows": ["per segmentation cycle"],
     "refresh": "per segmentation run",
@@ -97,7 +81,7 @@
   {
     "table_id": "T7",
     "table_name": "Common_Seg_Fct",
-    "description": "This is the consolidated usage and revenue fact table used for segmentation, ARPU tracking, and churn modeling. It provides the most granular breakdown of usage and revenue: data usage and revenue, voice usage split by onnet (same network), offnet (other networks), IDD (international), and roaming, SMS usage and revenue, roaming and GCC (Gulf region) specific metrics, prepaid revenue breakdown by service type, ARPU indicators, and both monthly and rolling trend metrics. Use this table when the query needs detailed usage breakdowns (like onnet vs offnet voice), monthly trend comparisons, rolling trend analysis, ARPU calculations, GCC-specific roaming data, or prepaid revenue splits. This provides more usage and revenue detail than 360_PROFILE.",
+    "description": "This is the consolidated usage and revenue fact table used for segmentation, ARPU tracking, and churn modeling. It provides the most granular breakdown of usage and revenue: data usage and revenue, voice usage split by onnet (same network), offnet (other networks), IDD (international), and roaming, SMS usage and revenue, roaming and GCC (Gulf region) specific metrics, prepaid revenue breakdown by service type, ARPU indicators, and both monthly and rolling trend metrics. Use this table when the query needs detailed usage breakdowns (like onnet vs offnet voice), monthly trend comparisons, rolling trend analysis, ARPU calculations, GCC-specific roaming data, or prepaid revenue splits.",
     "data_type": "summarized",
     "time_windows": ["monthly snapshots", "rolling trends", "D-1"],
     "refresh": "daily",

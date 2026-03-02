@@ -36,8 +36,7 @@ def load_group_data():
         "Subscriptions_25",
         "Profile_CDR_Group_26",
         "Common_Segment_Fct_27",
-        "Instant_CDR_Group_29",
-        "360_Profile_50"
+        "Instant_CDR_Group_29"
     ]
 
     sampled_data = []
