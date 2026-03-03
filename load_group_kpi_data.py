@@ -31,12 +31,12 @@ def load_group_data():
 
     groups = [
         "Lifecycle_CDR_6",
-        "Audience_Segment_CDR_22",
-        "Recharge_Segment_Fct_24",
+        "Audience_Seg_CDR_22",
+        "Recharge_Seg_Fct_24",
         "Subscriptions_25",
         "Profile_CDR_Group_26",
         "Common_Segment_Fct_27",
-        "Instant_CDR_Group_29"
+        "Instant_CDR_Group_29",
     ]
 
     sampled_data = []
