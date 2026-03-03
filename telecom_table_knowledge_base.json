@@ -48,40 +48,40 @@
 {
     "table_id": "T5",
     "table_name": "Subscriptions",
-    "description": "This is the core table for BOTH base subscription identity and product events. First, it holds master identity attributes: 'Subscription ID', 'Subscription Index', 'MSISDN Index', base line type ('Prepaid' or 'Postpaid'), 'Activation Source', 'Sign-up Method', and 'Subscription Channel'. Second, it tracks individual product subscription events including data bundles, VAS (value-added services), roaming packs, and the total count of active products. Use this table when the query asks for Subscription IDs/Indexes, Prepaid/Postpaid base types, activation sources, OR specific product/bundle/VAS subscriptions.",
-    "data_type": "core dimension and event-level detail",
-    "time_windows": ["current state", "rolling activity indicators", "D-1"],
+    "description": "This table is strictly a ledger for ADD-ON product subscription events (activations and renewals). It tracks when a subscriber purchases extra products: data bundles, VAS (value-added services), roaming packs, and digital services. Each record represents a single add-on purchase event. Use this table ONLY when the query is about buying or renewing specific add-on products, bundles, or VAS.",
+    "data_type": "summarized with event-level detail",
+    "time_windows": ["rolling activity indicators", "D-1"],
     "refresh": "daily",
-    "granularity": "one record per subscription identity OR per subscription event",
+    "granularity": "one record per subscriber per add-on subscription event",
     "example_queries": [
-      "numeric Subscription Index or Subscription ID serving as primary key",
-      "current subscription type such as Prepaid or Postpaid",
-      "Activation Source or Sign-up Method for new customers",
       "subscribers who subscribed to a data bundle via the app",
-      "customers with LESS than X active products"
+      "how many VAS products does the subscriber have",
+      "renewal rate for roaming packs",
+      "revenue from a specific Unlimited Social product purchase event"
     ],
-    "never_use_for": "total prepaid subscription revenue, overall ARPU, voice/data usage, recharge, demographics (age/gender), plan migrations (old to new plan), credit rating"
+    "never_use_for": "base Account/Subscriber IDs, MSISDN, Activation Date, subscriber tenure, Cust Dealer, activation channels, Prepaid/Postpaid line types, demographics"
   },
 {
     "table_id": "T6",
     "table_name": "Profile_Cdr_group",
-    "description": "This is the master demographic, device, and plan migration profile table. It stores human attributes (date of birth, gender, nationality), device details (model, technology), external credit rating/score, and tracking for plan migrations (current plan, old plan, new plan, contract movements). Use this table ONLY when the query needs human demographics, plan migration history, credit rating, or device details.",
-    "data_type": "profile attributes (static and dynamic)",
+    "description": "This is the master CRM account and demographic profile table. It holds the core identity of the subscriber: Account IDs, Subscriber IDs, MSISDN Index, and base line type (Prepaid/Postpaid). It tracks the origins and age of the account: Activation Date, subscriber tenure (Age on Network), Cust Dealer, Activation Source/Channel, and onboarding method. It also stores human demographics, external credit ratings, device details, plan migrations, and static service flags (Mobile App User, TV service). Use this table for ANY query asking for Account/Subscriber IDs, activation dates/channels, tenure, dealers, base line types, or demographic profiles.",
+    "data_type": "master profile and account dimension",
     "time_windows": ["current state", "D-1"],
     "refresh": "daily",
-    "granularity": "one record per subscriber",
+    "granularity": "one record per subscriber account",
     "example_queries": [
-      "subscribers who migrated from prepaid to postpaid plan",
-      "credit rating score of a subscriber",
-      "device model and technology used",
-      "demographic breakdown by age and nationality"
+      "numeric Subscriber ID, MSISDN, or Customer Account Number",
+      "Cust Dealer or Activation channel who activated the SIM",
+      "subscriber tenure, age on network, or activation date",
+      "current subscribed service category like Mobile Postpaid",
+      "is this customer a Mobile App User or have TV service"
     ],
-    "never_use_for": "Subscription IDs, MSISDN Index, base line type (Prepaid/Postpaid), Activation Source, Sign-up method, VAS/bundles, lifecycle status (Active/Grace), loan amounts"
+    "never_use_for": "add-on product purchases (bundles/VAS), real-time lifecycle status changes (Active/Grace), loan amounts, dynamic usage metrics"
   },
 {
     "table_id": "T7",
     "table_name": "Common_Seg_Fct",
-    "description": "This is the consolidated usage and revenue fact table used for segmentation, ARPU tracking, and overall subscriber spending. It provides the most granular breakdown of usage and aggregated revenue: data usage and revenue, voice usage split by on-net (same network) and off-net, IDD, SMS usage, and roaming. Critically, this table tracks overall 'Prepaid Subscription Revenue', 'Prepay Spending', and prepaid revenue breakdown by service type. Use this table when the query needs detailed usage breakdowns (like on-net vs off-net from bundles), monthly/rolling trend comparisons, ARPU calculations, GCC roaming data, or total prepaid subscription revenue/spending.",
+    "description": "This is the consolidated usage and revenue fact table used for segmentation, ARPU tracking, and overall subscriber spending. It provides the most granular breakdown of usage and aggregated revenue: data usage and revenue, voice usage split by on-net and off-net, IDD, SMS usage, and roaming. Critically, this table tracks overall 'Prepaid Subscription Revenue', 'Prepay Spending', and prepaid revenue breakdown by service type. Use this table when the query needs detailed usage breakdowns (like on-net vs off-net from bundles), monthly/rolling trend comparisons, ARPU calculations, GCC roaming data, or total prepaid subscription revenue/spending.",
     "data_type": "summarized",
     "time_windows": ["monthly snapshots", "rolling trends", "D-1"],
     "refresh": "daily",
@@ -93,23 +93,23 @@
       "ARPU trend and prepaid segment profitability",
       "prepaid revenue breakdown by service type"
     ],
-    "never_use_for": "individual product activation events, campaign tracking, audience segments, recharge channels, plan changes, real-time events, profile informations"
+    "never_use_for": "real-time or instant metrics, digital wallet transactions, mobile money, fintech, Money Trans Amount, individual product activation events, campaign tracking"
   },
 {
     "table_id": "T8",
     "table_name": "Instant_cdr_group",
-    "description": "This table captures near real-time transactional events AND dynamic billing/lifecycle statuses. It stores voice/SMS/data session events, recharge transactions, and digital wallet transactions (including Partner/Merchant IDs). Crucially, it tracks all loan and credit activity (airtime advances, device loans, outstanding debt, loan recovery status) and dynamic lifecycle status changes (Active, Grace, suspended, inactive). Use this table for real-time events, OR anytime a query asks for loan balances, debt, loan recovery status, or current lifecycle/subscription state (Active/Grace).",
+    "description": "This table captures near real-time transactional events AND dynamic billing/lifecycle statuses. It stores voice/SMS/data session events (including the individual event-level revenue, charge, or cost for those specific OG/IDD calls and texts). It is the EXCLUSIVE table for digital wallet transactions, mobile money, fintech, and 'Money Trans Amount'. Crucially, it tracks all loan and credit activity (airtime advances, outstanding debt) and dynamic lifecycle status changes (Active/Grace). Use this table for real-time/instant events, wallet/mobile money transactions, event-level call/SMS charges, OR anytime a query asks for loan balances, debt, or current lifecycle state.",
     "data_type": "real-time transactional and dynamic status",
     "time_windows": ["event-level", "near real-time", "current dynamic state"],
     "refresh": "near real-time",
     "granularity": "one record per subscriber per event or state change",
     "example_queries": [
       "what is the customer's current lifecycle status (Active or Grace)",
-      "subscriber's remaining loan amount or outstanding debt",
-      "current Loan Recovery Status",
-      "payment Merchant identifier or Partner ID",
-      "real-time voice call happening now"
+      "total numeric Money Trans Amount for this subscriber's wallet",
+      "mobile money and fintech service adoption",
+      "real-time segmentation of high-value users",
+      "event-level revenue generated from outgoing (OG) SMS or IDD calls"
     ],
-    "never_use_for": "demographics, base plan migrations (use Profile), summarized 30-day/90-day aggregated usage metrics, campaign tracking"
+    "never_use_for": "demographics, base plan migrations (use Profile), overall 30-day ARPU tracking, campaign delivery tracking"
   }
 ]
