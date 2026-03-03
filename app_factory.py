@@ -121,13 +121,13 @@ TASK: Given a user's KPI statement and retrieved table descriptions, decide whic
 
 CRITICAL RULES:
 1. If the statement asks for SUMMARIZED data (totals, averages, last N days, trends, rolling metrics) → NEVER pick Instant_cdr_group. Pick the appropriate summarized table.
-2. If the statement asks for REAL-TIME or LATEST EVENT data → pick Instant_cdr_group.
+2. If the statement asks for REAL-TIME events, OR mentions loans, debt, wallet merchants, or lifecycle status (Active/Grace) → pick Instant_cdr_group.
 3. If the statement mentions campaign, promotion, bonus, delivery, response → pick LIFECYCLE_CDR.
 4. If the statement mentions audience segment, segment membership → pick AUDIENCE_SEGMENT_CDR.
 5. If the statement mentions recharge amount, denomination, recharge channel, top-up frequency → pick Recharge_Seg_Fct.
-6. If the statement mentions product subscription, bundle, VAS, subscription channel → pick Subscriptions.
-7. If the statement mentions plan change, old plan, credit rating, dealer → pick Profile_Cdr_group.
-8. If the statement mentions onnet/offnet voice, GCC roaming, ARPU calculation, monthly trend, prepaid revenue split → pick Common_Seg_Fct.
+6. If the statement mentions Subscription IDs, MSISDN Index, Prepaid/Postpaid line type, Activation Source, OR product/bundle/VAS activations → pick Subscriptions.
+7. If the statement asks for human demographics (age/gender), plan migrations (old plan to new plan), credit rating, or device details → pick Profile_Cdr_group.
+8. If the statement asks for overall PREPAID SUBSCRIPTION REVENUE, total prepay spending, ARPU, or on-net/off-net usage from bundles → pick Common_Seg_Fct.
 9. A statement can mention MULTIPLE KPIs. Return MULTIPLE tables if needed.
 
 Also check the "never_use_for" field of each retrieved table to make sure you are not misrouting.
